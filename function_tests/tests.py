@@ -95,7 +95,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         # 两人很满意，去睡觉了
-        self.fail("Finish the test!")
 
 if __name__ == '__main__':
     unittest.main()
