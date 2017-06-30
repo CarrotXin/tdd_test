@@ -1,4 +1,5 @@
 #-*- coding:utf-8 -*-
+import sys
 import time
 
 # from django.test import LiveServerTestCase
@@ -9,6 +10,22 @@ from selenium.webdriver.common.keys import Keys
 
 class NewVisitorTest(StaticLiveServerTestCase):
     
+    @classmethod
+    def setUpClass(cls):
+        cls.server_url = "http://amy.com"
+        return
+        # for arg in sys.argv:
+        #     if 'liveserver' in arg:
+        #         cls.server_url = "http://" + arg.split('=')[1]
+        #         return
+        # super().setUpClass()
+        # cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
+
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
@@ -25,7 +42,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Edith 听说有个很酷的在线待办事项应用
         # 她去看了这个应用的首页
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # 她注意到网页的标题头和头部都包含 To-Do 这个词
         self.assertIn("To-Do", self.browser.title)
@@ -73,7 +90,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Francis 访问首页
         # 页面看不到 Edith 的清单
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
@@ -100,7 +117,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def test_layout_and_styling(self):
         # Edith 访问首页
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         time.sleep(5)
 
         # NOT RESOVLED:selenium.common.exceptions.WebDriverException: Message: setWindowRect
