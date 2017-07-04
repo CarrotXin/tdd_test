@@ -2,42 +2,12 @@
 import sys
 import time
 
-# from django.test import LiveServerTestCase
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+from .base import FunctionalTest
 
-class NewVisitorTest(StaticLiveServerTestCase):
-    
-    # in Django 1.11 removed manage.py test --liveserver option
-    # @classmethod
-    # def setUpClass(cls):
-    #     for arg in sys.argv:
-    #         if 'liveserver' in arg:
-    #             cls.server_url = "http://" + arg.split('=')[1]
-    #             return
-    #     super().setUpClass()
-    #     cls.server_url = cls.live_server_url
-
-    # @classmethod
-    # def tearDownClass(cls):
-    #     if cls.server_url == cls.live_server_url:
-    #         super().tearDownClass()
-
-    def setUp(self):
-        self.server_url = "http://amy.com"
-        self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(3)
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
-
+class NewVisitorTest(FunctionalTest):
     def test_can_start_a_list_and_retrive_it_later(self):
 
         # Edith 听说有个很酷的在线待办事项应用
@@ -113,23 +83,3 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         # 两人很满意，去睡觉了
-
-
-    def test_layout_and_styling(self):
-        # Edith 访问首页
-        self.browser.get(self.server_url)
-        time.sleep(5)
-
-        # NOT RESOVLED:selenium.common.exceptions.WebDriverException: Message: setWindowRect
-        # self.browser.set_window_size(1024, 768)
-
-        # # 她看到输入框完美的居中显示
-        # inputbox = self.browser.find_elements_by_id('id_new_item')
-        # self.assertAlmostEqual(
-        #     inputbox.location['x'] + inputbox.size['width']/2,
-        #     512,
-        #     delta=5
-        # )
-
-if __name__ == '__main__':
-    unittest.main()
