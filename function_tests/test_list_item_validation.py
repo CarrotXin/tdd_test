@@ -12,6 +12,7 @@ class ItemValidationTest(FunctionalTest):
         # 输入框中没输入任何内容，它就按下了回车键
         self.browser.get(self.server_url)
         self.browser.find_element_by_id('id_new_item').send_keys('\ue007')
+        time.sleep(0.5)
 
         # 首页刷新了，显示一个错误消息
         # 提示待办事项不能为空
@@ -20,10 +21,12 @@ class ItemValidationTest(FunctionalTest):
 
         # 她输入了一些文字，然后再次提交，这次没有问题了
         self.browser.find_element_by_id('id_new_item').send_keys('Buy milk\ue007')
+        time.sleep(0.5)
         self.check_for_row_in_list_table('1: Buy milk')
 
         # 她有点调皮，又提交了一个空待办事项
-        self.browser.find_element_by_id(id_new_item).send_keys('\ue007')
+        self.browser.find_element_by_id('id_new_item').send_keys('\ue007')
+        time.sleep(0.5)
 
         # 在清单页面她看到了一个类似的错误信息
         self.check_for_row_in_list_table('1: Buy milk')
@@ -32,6 +35,6 @@ class ItemValidationTest(FunctionalTest):
 
         # 输入文字后就没有问题了
         self.browser.find_element_by_id('id_new_item').send_keys('Make tea\ue007')
+        time.sleep(0.5)
         self.check_for_row_in_list_table('1: Buy milk')
         self.check_for_row_in_list_table('2: Make tea')
-        self.fail('write me!')
