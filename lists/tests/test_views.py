@@ -10,6 +10,7 @@ from lists.forms import ItemForm
 
 
 class HomePageTest(TestCase):
+    # maxDiff = None
 
     def test_home_page_renders_home_template(self):
         response = self.client.get('/')
@@ -19,6 +20,11 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertIsInstance(response.context['form'], ItemForm)
 
+    # def test_html(self):
+    #     request = HttpRequest()
+    #     response = home_page(request)
+    #     expect_html = render_to_string('home.html', {'form': ItemForm()})
+    #     self.assertMultiLineEqual(response.content.decode(), expect_html)
 
 class ListViewTest(TestCase):
 
@@ -54,7 +60,7 @@ class ListViewTest(TestCase):
 
         self.client.post(
             '/lists/%d/' % (correct_list.id),
-            data={'item_text': 'A new item for an existing list'}
+            data={'text': 'A new item for an existing list'}
         )
 
         self.assertEqual(Item.objects.count(), 1)
@@ -68,7 +74,7 @@ class ListViewTest(TestCase):
 
         response = self.client.post(
             '/lists/%d/' % (correct_list.id),
-            data={'item_text': 'A new item for an existing list'}
+            data={'text': 'A new item for an existing list'}
         )
 
         self.assertRedirects(response, '/lists/%d/' % (correct_list.id))
@@ -77,7 +83,7 @@ class ListViewTest(TestCase):
         list_ = List.objects.create()
         response = self.client.post(
             '/lists/%d/' % (list_.id),
-            data={'item_text': ''}
+            data={'text': ''}
         )
 
         self.assertEqual(response.status_code, 200)
@@ -91,7 +97,7 @@ class  NewListView(TestCase):
     def test_saving_a_POST_request(self):
         self.client.post(
             '/lists/new',
-            data={'item_text': 'A new list item'}
+            data={'text': 'A new list item'}
         )
 
         self.assertEqual(Item.objects.count(), 1)
@@ -102,7 +108,7 @@ class  NewListView(TestCase):
     def test_redirects_after_POST(self):
         response = self.client.post(
             '/lists/new',
-            data={'item_text': 'A new list item'}
+            data={'text': 'A new list item'}
         )
 
         new_list = List.objects.first()
@@ -114,7 +120,7 @@ class  NewListView(TestCase):
 
 
     def test_validation_errors_and_send_back_to_home_page_template(self):
-        response = self.client.post('/lists/new', data={'item_text': ''})
+        response = self.client.post('/lists/new', data={'text': ''})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
         expected_error = escape("You can't have an empty list item")
@@ -122,6 +128,6 @@ class  NewListView(TestCase):
 
 
     def test_invalid_list_items_arent_saved(self):
-        self.client.post('/lists/new', data={'item_text': ''})
+        self.client.post('/lists/new', data={'text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
